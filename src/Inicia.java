@@ -1,4 +1,7 @@
+
+
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -14,13 +17,15 @@ public class Inicia implements Jogo {
 
     private int life = 3;
     private int pontos = 0;
+    public int astCount = 0;
 
     boolean naveViva = false;
+    boolean gameOver = false;
 
     public Inicia(){
         for(int i = 0 ; i < 6 ; i++){
             Asteroide ast = new Asteroide(limitaValor(0), limitaValor(0) , limitaValor(1), limitaValor(1), (int)limitaValor(2));
-            asteroides.add(ast);
+            this.asteroides.add(ast);
         }
     }
 
@@ -46,26 +51,27 @@ public class Inicia implements Jogo {
 //        Controlam a rotação da nave
 
         if(teclas.contains("left")) {
-            nave.rotacionaEsquerda(dt);
+            this.nave.rotacionaEsquerda(dt);
         }
         if (teclas.contains("right")){
-            nave.rotacionaDireita(dt);
+            this.nave.rotacionaDireita(dt);
         }
 
 //        Controlam a velocidade com que a nave se move
-
-        if (teclas.contains("up")) {
-            nave.movimentaFrente(dt);
-            naveViva = true;
+        if(this.life > 0) {
+            if (teclas.contains("up")) {
+                this.nave.movimentaFrente(dt);
+                this.naveViva = true;
+            }
+            if (!teclas.contains("up")) {
+                this.nave.freio(dt);
+            }
         }
-        if(!teclas.contains("up")){
-            nave.freio(dt);
-        }
-        nave.moveNave(dt, getAltura(), getLargura());
+        this.nave.moveNave(dt, getAltura(), getLargura());
 
-        nave.testeDosTiros(getAltura(), getLargura());
+        this.nave.testeDosTiros(getAltura(), getLargura());
 
-        for(Tiro shoot : nave.Tiros){
+        for(Tiro shoot : this.nave.Tiros){
             shoot.movimentaTiro(dt);
         }
 
@@ -79,6 +85,7 @@ public class Inicia implements Jogo {
                         nave.retorna(getLargura(), getAltura());
                     } else {
                         nave.destroy();
+                        gameOver = true;
                     }
                 }
             }
@@ -102,7 +109,7 @@ public class Inicia implements Jogo {
                 asteroide.mudaTamanho(10);
             }
             else if(asteroide.getTamanho() == 40){
-                Asteroide novoasteroide = new Asteroide(asteroide.getX(), asteroide.getY(), -asteroide.getVelX(), -asteroide.getVelY(), 2);
+                Asteroide novoasteroide = new Asteroide(asteroide.getX(), asteroide.getY(), -asteroide.getVelX(), -asteroide.getVelY(), 1);
                 asteroides.add(novoasteroide);
                 asteroide.mudaTamanho(20);
             }
@@ -110,6 +117,16 @@ public class Inicia implements Jogo {
         asteroides.removeAll(asteroidesParaSeremRemovidos);
         asteroidesAtingidos.removeAll(asteroidesAtingidos);
         asteroidesParaSeremRemovidos.removeAll(asteroidesParaSeremRemovidos);
+        Iterator it = asteroides.iterator();
+        astCount = 0;
+        for(Asteroide aster : asteroides) {
+            astCount++;
+        }
+//        System.out.println(astCount);
+        if(astCount < 6){
+            Asteroide ast = new Asteroide(0, 0, limitaValor(1), limitaValor(1), (int)limitaValor(2));
+            asteroides.add(ast);
+        }
     }
 
     public void desenhar(Tela tela){
@@ -122,12 +139,12 @@ public class Inicia implements Jogo {
         for(Tiro tiro : nave.Tiros){
             tiro.desenhar(tela);
         }
-        if(this.life == 0) {
-            tela.texto("GAME OVER", getLargura()/2, getAltura()/2, 20, Cor.VERMELHO);
+        if(gameOver) {
+            tela.texto("GAME OVER", getLargura()/2-340, getAltura()/2, 100, Cor.VERMELHO);
         }
         tela.texto("" + pontos, 50, 80, 50, Cor.CINZA);
         tela.texto("" + life, 924, 80, 50, Cor.CINZA);
-        if(!naveViva){
+        if(!naveViva && !gameOver){
             tela.texto("APERTE A TECLA UP PARA COMEÇAR O JOGO", getLargura()/2 - 300, 700, 25, Cor.VERMELHO);
             tela.texto("Aperte X para atirar", 370, 100, 25, Cor.CINZA);
             tela.texto( "As teclas LEFT e RIGHT comandam a rotação da nave, enquanto a tecla UP permite acelerar para o lado apontado pela nave", 5, 150, 15, Cor.CINZA);

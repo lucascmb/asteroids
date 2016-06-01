@@ -1,7 +1,7 @@
 /**
  * Created by lcs on 25/05/16.
  */
-public class Asteroide{
+public class Asteroide implements ObjetosConcretos{
 
     private double coordX, coordY, velX, velY;
     private int tamanho;

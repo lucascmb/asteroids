@@ -4,17 +4,24 @@
 import java.util.Set;
 import java.util.HashSet;
 
-public class Nave {
+public class Nave implements ObjetosConcretos {
 
-    private double velocidade, posY, posX, anguloDirecao;
+    private double velocidadeX, velocidadeY, velocidadeTotal;
+    private double posY;
+    private double posX;
+    private double anguloDirecao;
+
     public int valorRotacao = 0;
+
     public Ponto [] p = new Ponto[3];
+
     private Cor cor;
+
     Set<Tiro> Tiros = new HashSet<>();
     Set<Tiro> tirosParaSeremRemovidos = new HashSet<>();
 
     public Nave (double posX, double posY){
-        this.velocidade = 0;
+        this.velocidadeX = this.velocidadeY = 0;
         this.posX = posX;
         this.posY = posY;
         this.anguloDirecao = 0;
@@ -24,44 +31,53 @@ public class Nave {
         this.cor = new Cor(Math.random(), Math.random(), Math.random());
     }
 
-    public double getPosX(){
+    public double getX(){
         return posX;
     }
 
-    public double getPosY(){
+    public double getY(){
         return posY;
     }
 
     public void rotacionaDireita(double dt){
-        anguloDirecao = anguloDirecao + Math.PI * (dt/1);
+        anguloDirecao = anguloDirecao + Math.PI * (dt);
         for(int i = 0 ; i < 3 ; i++){
             p[i].rotacao(anguloDirecao);
         }
     }
 
     public void rotacionaEsquerda(double dt){
-        anguloDirecao = anguloDirecao - Math.PI * (dt/1);
+        anguloDirecao = anguloDirecao - Math.PI * (dt);
         for(int i = 0 ; i < 3 ; i++){
             p[i].rotacao(anguloDirecao);
         }
     }
 
     public void movimentaFrente (double dt) {
-        velocidade += 100 * (dt/1);
+        velocidadeX += 100 * (dt) * Math.cos(anguloDirecao);
+//        System.out.println(velocidadeX);
+        velocidadeY += 100 * (dt) * Math.sin(anguloDirecao);
+//        System.out.println(velocidadeY);
     }
 
     public void freio(double dt){
-        if(velocidade > 0) {
-            velocidade -= 100 * (dt / 1);
+        if(velocidadeX > 0) {
+            velocidadeX -= 100 * dt;
         }
-        else{
-            velocidade = 0;
+        if(velocidadeY > 0){
+            velocidadeY -= 100 * dt;
+        }
+        if(velocidadeX < 0){
+            velocidadeX += 100 * dt;
+        }
+        if(velocidadeY < 0){
+            velocidadeY += 100 * dt;
         }
     }
 
     public void moveNave(double dt, double altura, double largura){
-        posX += (velocidade * (dt)) * Math.cos(anguloDirecao);
-        posY += (velocidade * (dt)) * Math.sin(anguloDirecao);
+        this.posX += (velocidadeX * (dt));
+        this.posY += (velocidadeY * (dt));
         if(posX > largura){
             posX = 0;
         }
@@ -77,11 +93,11 @@ public class Nave {
     }
 
     public void desenhar (Tela t){
-        t.triangulo(getPosX() + p[0].xPos, getPosY() + p[0].yPos, getPosX() + p[1].xPos, getPosY() + p[1].yPos, getPosX() + p[2].xPos, getPosY() + p[2].yPos, cor);
+        t.triangulo(getX() + p[0].xPos, getY() + p[0].yPos, getX() + p[1].xPos, getY() + p[1].yPos, getX() + p[2].xPos, getY() + p[2].yPos, cor);
     }
 
     public void addTiros(){
-        Tiro tirinho = new Tiro(getPosX() + p[0].xPos, getPosY()+ p[0].yPos, velocidade, anguloDirecao);
+        Tiro tirinho = new Tiro(getX() + p[0].xPos, getY()+ p[0].yPos, velocidadeX, velocidadeY, anguloDirecao);
         Tiros.add(tirinho);
     }
 
@@ -98,11 +114,11 @@ public class Nave {
     public void retorna(double largura, double altura){
         posX = largura/2;
         posY = altura/2;
-        velocidade = 0;
+        velocidadeX = velocidadeY = 0;
     }
 
     public void destroy(){
-        posX = posY = 10000000;
+        posX = posY = 124887;
     }
 
 

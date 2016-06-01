@@ -1,9 +1,9 @@
 /**
  * Created by lcs on 29/05/16.
  */
-public class Tiro {
+public class Tiro implements ObjetosConcretos {
 
-    double posX, posY, velocidadeTiro, anguloDaNave;
+    double posX, posY, velocidadeTiroX, velocidadeTiroY, anguloDaNave;
     boolean allowToRemove;
     Cor cor;
 
@@ -15,11 +15,12 @@ public class Tiro {
         return posY;
     }
 
-    public Tiro(double posX, double posY, double velocidade, double anguloDaNave){
+    public Tiro(double posX, double posY, double velocidadeX, double velocidadeY, double anguloDaNave){
 
         this.posX = posX;
         this.posY = posY;
-        this.velocidadeTiro = velocidade + 100;
+        this.velocidadeTiroX = velocidadeX;
+        this.velocidadeTiroY = velocidadeY;
         this.cor = Cor.BRANCO;
         this.anguloDaNave = anguloDaNave;
         this.allowToRemove = false;
@@ -31,9 +32,8 @@ public class Tiro {
     }
 
     public void movimentaTiro(double dt){
-        posX += velocidadeTiro * Math.cos(anguloDaNave) * dt;
-        posY += velocidadeTiro * Math.sin(anguloDaNave) * dt;
-//        System.out.println(posX);
+        posX += (velocidadeTiroX + 100*Math.cos(anguloDaNave)) * dt;
+        posY += (velocidadeTiroY + 100*Math.sin(anguloDaNave)) * dt;
     }
 
     public boolean testaRange(double alturaTela, double larguraTela){
