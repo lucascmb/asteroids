@@ -4,16 +4,11 @@
 import java.util.Set;
 import java.util.HashSet;
 
-public class Nave implements ObjetosConcretos {
+public class Nave extends ObjetosGerais implements ObjetosConcretos {
 
-    private double velocidadeX, velocidadeY, velocidadeTotal;
-    private double posY;
-    private double posX;
     private double anguloDirecao;
 
-    public int valorRotacao = 0;
-
-    public Ponto [] p = new Ponto[3];
+    private Ponto [] p = new Ponto[3];
 
     private Cor cor;
 
@@ -54,10 +49,12 @@ public class Nave implements ObjetosConcretos {
     }
 
     public void movimentaFrente (double dt) {
-        velocidadeX += 100 * (dt) * Math.cos(anguloDirecao);
-//        System.out.println(velocidadeX);
-        velocidadeY += 100 * (dt) * Math.sin(anguloDirecao);
-//        System.out.println(velocidadeY);
+        if(velocidadeX > -300 && velocidadeX < 300) {
+            velocidadeX += 100 * (dt) * Math.cos(anguloDirecao);
+        }
+        if(velocidadeY > -300 && velocidadeY < 300) {
+            velocidadeY += 100 * (dt) * Math.sin(anguloDirecao);
+        }
     }
 
     public void freio(double dt){
@@ -75,7 +72,7 @@ public class Nave implements ObjetosConcretos {
         }
     }
 
-    public void moveNave(double dt, double altura, double largura){
+    public void movimenta(double dt, double altura, double largura){
         this.posX += (velocidadeX * (dt));
         this.posY += (velocidadeY * (dt));
         if(posX > largura){
@@ -93,18 +90,17 @@ public class Nave implements ObjetosConcretos {
     }
 
     public void desenhar (Tela t){
-        t.triangulo(getX() + p[0].xPos, getY() + p[0].yPos, getX() + p[1].xPos, getY() + p[1].yPos, getX() + p[2].xPos, getY() + p[2].yPos, cor);
+        t.triangulo(getX() + p[0].getX(), getY() + p[0].getY(), getX() + p[1].getX(), getY() + p[1].getY(), getX() + p[2].getX(), getY() + p[2].getY(), cor);
     }
 
     public void addTiros(){
-        Tiro tirinho = new Tiro(getX() + p[0].xPos, getY()+ p[0].yPos, velocidadeX, velocidadeY, anguloDirecao);
-        Tiros.add(tirinho);
+        Tiro novoTiro = new Tiro(getX() + p[0].getX(), getY()+ p[0].getY(), velocidadeX, velocidadeY, anguloDirecao);
+        Tiros.add(novoTiro);
     }
 
     public void testeDosTiros(double altura, double largura){
         for(Tiro tiro : Tiros){
-            tiro.testaRange(altura, largura);
-            if(tiro.allowToRemove){
+            if(tiro.testaRange()){
                 tirosParaSeremRemovidos.add(tiro);
             }
         }
@@ -120,6 +116,5 @@ public class Nave implements ObjetosConcretos {
     public void destroy(){
         posX = posY = 124887;
     }
-
 
 }

@@ -67,12 +67,12 @@ public class Inicia implements Jogo {
                 this.nave.freio(dt);
             }
         }
-        this.nave.moveNave(dt, getAltura(), getLargura());
+        this.nave.movimenta(dt, getAltura(), getLargura());
 
         this.nave.testeDosTiros(getAltura(), getLargura());
 
         for(Tiro shoot : this.nave.Tiros){
-            shoot.movimentaTiro(dt);
+            shoot.movimenta(dt, getAltura(), getLargura());
         }
 
         if(naveViva) {
@@ -104,26 +104,21 @@ public class Inicia implements Jogo {
         for(Asteroide asteroide : asteroidesAtingidos){
             if(asteroide.getTamanho() == 10 || asteroide.getTamanho() == 20) asteroidesParaSeremRemovidos.add(asteroide);
             else if(asteroide.getTamanho() == 30){
-                Asteroide novoasteroide = new Asteroide(asteroide.getX(), asteroide.getY(), -asteroide.getVelX(), -asteroide.getVelY(), 1);
+                Asteroide novoasteroide = new Asteroide(asteroide.getX(), asteroide.getY(), asteroide.getVelX(), -asteroide.getVelY(), 1);
                 asteroides.add(novoasteroide);
-                asteroide.mudaTamanho(10);
+                asteroide.mudaAsteroid(10);
             }
             else if(asteroide.getTamanho() == 40){
                 Asteroide novoasteroide = new Asteroide(asteroide.getX(), asteroide.getY(), -asteroide.getVelX(), -asteroide.getVelY(), 1);
                 asteroides.add(novoasteroide);
-                asteroide.mudaTamanho(20);
+                asteroide.mudaAsteroid(20);
             }
         }
         asteroides.removeAll(asteroidesParaSeremRemovidos);
         asteroidesAtingidos.removeAll(asteroidesAtingidos);
         asteroidesParaSeremRemovidos.removeAll(asteroidesParaSeremRemovidos);
-        Iterator it = asteroides.iterator();
-        astCount = 0;
-        for(Asteroide aster : asteroides) {
-            astCount++;
-        }
-//        System.out.println(astCount);
-        if(astCount < 6){
+
+        if(asteroides.size() < 6){
             Asteroide ast = new Asteroide(0, 0, limitaValor(1), limitaValor(1), (int)limitaValor(2));
             asteroides.add(ast);
         }
@@ -171,6 +166,9 @@ public class Inicia implements Jogo {
                 break;
             case 1:
                 x = Math.pow((-1), (int)(x*2)) * (1 + (x * 20));
+                while (x < -300 || x > 300){
+                    x = Math.pow((-1), (int)(x*2)) * (1 + (x * 20));
+                }
                 break;
             case 2:
                 x = 1 + (x * 4);

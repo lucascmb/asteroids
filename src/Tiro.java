@@ -1,11 +1,13 @@
 /**
  * Created by lcs on 29/05/16.
  */
-public class Tiro implements ObjetosConcretos {
+public class Tiro extends ObjetosGerais implements ObjetosConcretos {
 
-    double posX, posY, velocidadeTiroX, velocidadeTiroY, anguloDaNave;
-    boolean allowToRemove;
-    Cor cor;
+    private double anguloDaNave;
+
+    private boolean allowToRemove;
+
+    private Cor cor;
 
     public double getX(){
         return posX;
@@ -19,8 +21,8 @@ public class Tiro implements ObjetosConcretos {
 
         this.posX = posX;
         this.posY = posY;
-        this.velocidadeTiroX = velocidadeX;
-        this.velocidadeTiroY = velocidadeY;
+        this.velocidadeX = velocidadeX;
+        this.velocidadeY = velocidadeY;
         this.cor = Cor.BRANCO;
         this.anguloDaNave = anguloDaNave;
         this.allowToRemove = false;
@@ -31,15 +33,15 @@ public class Tiro implements ObjetosConcretos {
         t.circulo(posX, posY, 1, cor);
     }
 
-    public void movimentaTiro(double dt){
-        posX += (velocidadeTiroX + 100*Math.cos(anguloDaNave)) * dt;
-        posY += (velocidadeTiroY + 100*Math.sin(anguloDaNave)) * dt;
-    }
-
-    public boolean testaRange(double alturaTela, double larguraTela){
+    public void movimenta(double dt, double alturaTela, double larguraTela){
+        posX += (velocidadeX + 100*Math.cos(anguloDaNave)) * dt;
+        posY += (velocidadeY + 100*Math.sin(anguloDaNave)) * dt;
         if(posX > larguraTela + 5 || posX < -5 || posY > alturaTela + 5 || posY < -5){
             allowToRemove = true;
         }
+    }
+
+    public boolean testaRange(){
         return allowToRemove;
     }
 
