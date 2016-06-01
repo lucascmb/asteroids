@@ -28,6 +28,18 @@ public class Asteroide{
         return coordY;
     }
 
+    public double getVelX(){
+        return velX;
+    }
+
+    public double getVelY(){
+        return velY;
+    }
+
+    public void mudaTamanho(int novoTamanho){
+        this.tamanho = novoTamanho;
+    }
+
     public void desenhar(Tela t) {
         t.circulo(coordX, coordY, tamanho, cor);
     }

@@ -7,6 +7,14 @@ public class Tiro {
     boolean allowToRemove;
     Cor cor;
 
+    public double getX(){
+        return posX;
+    }
+
+    public double getY(){
+        return posY;
+    }
+
     public Tiro(double posX, double posY, double velocidade, double anguloDaNave){
 
         this.posX = posX;
